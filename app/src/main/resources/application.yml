@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: funds-data-scraper
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: 8080
+
+scraper:
+  schedule:
+    # Every day at 03:00.
+    cron: "0 0 3 * * *"
