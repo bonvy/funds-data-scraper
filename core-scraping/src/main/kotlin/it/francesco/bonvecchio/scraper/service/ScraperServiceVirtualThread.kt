@@ -26,7 +26,7 @@ class ScraperServiceVirtualThread(
     private val logger: Logger = LoggerFactory.getLogger(ScraperServiceVirtualThread::class.java)
 ) : ScraperService {
     companion object {
-        private val MAX_PARALLEL_EXECUTION = 200
+        private const val MAX_PARALLEL_EXECUTION = 200
     }
 
     private var currentScrapeProcess: AtomicInteger = AtomicInteger(0)
