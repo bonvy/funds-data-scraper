@@ -9,3 +9,9 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
 }
+
+
+dependencies{
+    implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
+    implementation("org.slf4j:slf4j-api:2.0.19")
+}
