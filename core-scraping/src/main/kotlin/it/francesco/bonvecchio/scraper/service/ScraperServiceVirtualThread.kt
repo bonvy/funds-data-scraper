@@ -53,29 +53,43 @@ class ScraperServiceVirtualThread(
                 currentScrapeProcess.incrementAndGet()
                 startScraping(request).thenAccept { result ->
                     run {
-                        if(result == null){
+                        if (result == null) {
                             return@run
                         }
                         when (result) {
                             is ScrapeResult.Success<*> -> {
                                 val postScrapeOperation = postScrapeOperationMap.remove(request)
-                                if (postScrapeOperation != null) {
+                                postScrapeOperation?.let {
+
                                     logger.info("Starting post operation for {}", request)
-                                    try{
-                                        when(postScrapeOperation.invoke(result)){
-                                            is PostOperationResult.Success -> logger.info("Post operation succeeded: {}", request)
-                                            is PostOperationResult.Failure -> logger.error("Post operation failed: {}", request)
+
+                                    try {
+                                        when (it.invoke(result)) {
+                                            is PostOperationResult.Success -> logger.info(
+                                                "Post operation succeeded: {}",
+                                                request
+                                            )
+
+                                            is PostOperationResult.Failure -> logger.error(
+                                                "Post operation failed: {}",
+                                                request
+                                            )
                                         }
-                                    }catch (e: Exception){
+                                    } catch (e: Exception) {
                                         logger.error("Post operation failed with unhandled exception request: $result, exception: $e")
-                                    }finally {
+                                    } finally {
                                         currentScrapeProcess.decrementAndGet()
                                     }
 
                                     return@run
                                 }
-                                logger.warn("It was not possible to find the right post operation function for {}", request)
+
+                                logger.warn(
+                                    "It was not possible to find the right post operation function for {}",
+                                    request
+                                )
                             }
+
                             is ScrapeResult.Error -> {}
                             is ScrapeResult.ParserNotFound -> {}
                         }
