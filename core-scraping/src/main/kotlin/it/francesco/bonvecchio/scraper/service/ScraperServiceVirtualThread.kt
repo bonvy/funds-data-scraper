@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger
 @Service
 class ScraperServiceVirtualThread(
     private val asyncService: AsyncService,
-    private val parserStaticStie: Map<String, ParserStaticSiteDefinition<Any>>,
+    private val parserStaticSite: Map<String, ParserStaticSiteDefinition<Any>>,
     @Qualifier("StaticSiteClient") private val staticSiteClient: BaseScrapeClient,
     private val logger: Logger = LoggerFactory.getLogger(ScraperServiceVirtualThread::class.java)
 ) : ScraperService {
@@ -104,7 +104,7 @@ class ScraperServiceVirtualThread(
     }
 
     private fun scrapeStaticSite(request: ScrapeRequest.StaticSiteRequest): ScrapeResult {
-        val parser = parserStaticStie[request.siteId.domain]
+        val parser = parserStaticSite[request.siteId.domain]
             ?: return ScrapeResult.ParserNotFound("Error while parsing ${request.siteId.domain}, parser not found");
         val response = staticSiteClient.fetch(request)
         return when (response) {
